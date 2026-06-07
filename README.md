@@ -15,6 +15,10 @@ A [Spicetify](https://spicetify.app) extension that turns your album art into a 
 
 ---
 
+## Screenshots
+<img width="2560" height="1440" alt="image" src="https://github.com/user-attachments/assets/9ddcfcfb-34d9-428e-be98-b296ce304bf1" />
+
+
 ## Installation
 
 ### Prerequisites
