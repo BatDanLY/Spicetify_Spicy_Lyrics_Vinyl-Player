@@ -248,7 +248,6 @@ function onWindowPointerMove(e: PointerEvent): void {
 
     if (!drag.active) return;
 
-
     const currentAngle = angleToCursor(e.clientX, e.clientY, drag.centerX, drag.centerY);
     const stepDelta = shortestArcDelta(drag.lastAngle, currentAngle);
     drag.lastAngle = currentAngle;
@@ -474,7 +473,7 @@ function bindElements(): void {
 function startDOMObserver(): void {
     if (domObserver) return;
 
-    const target = document.querySelector(".Root__now-playing-bar") ?? document.body;
+    const target = document.querySelector("#SpicyLyricsPage") ?? document.body;
 
     domObserver = new MutationObserver(() => {
         bindElements();
@@ -484,7 +483,7 @@ function startDOMObserver(): void {
 }
 
 function onSongChange(): void {
-    console.log("onSongChange", currentDegrees, currentDegrees % 360);
+    console.log("onSongChange");
     applyRotation(activeImageContainer, currentDegrees % 360, true);
     setTimeout(function(){
         currentDegrees = 0;
@@ -517,7 +516,7 @@ async function main(): Promise<void> {
     startAnimationLoop();
 
     Spicetify.showNotification(
-        "Vinyl Scrubbing Enabled"
+        "Vinyl-Player Addon Loaded"
     );
 }
 
