@@ -374,6 +374,10 @@ function injectStyles(): void {
     body.${DRAGGING_CLASS} .MediaImageContainer {
         filter: brightness(1.08);
     }
+    
+    .MediaContent {
+        transform: scale(0.85);
+    }
 
     .MediaImageContainer {
         border-radius: 50% !important;
@@ -437,8 +441,8 @@ function injectStyles(): void {
                 circle,
                 transparent 70%,
                 transparent 71%,
-                rgba(255,255,255,0.08) 71.2%,
-                rgba(255,255,255,0.08) 71.4%,
+                rgba(255,255,255,0.2) 71.2%,
+                rgba(255,255,255,0.2) 71.4%,
                 transparent 71.6%,
                 transparent 72%
             );
@@ -480,8 +484,12 @@ function startDOMObserver(): void {
 }
 
 function onSongChange(): void {
-    currentDegrees = 0;
-    applyRotation(activeImageContainer, 0, true);
+    console.log("onSongChange", currentDegrees, currentDegrees % 360);
+    applyRotation(activeImageContainer, currentDegrees % 360, true);
+    setTimeout(function(){
+        currentDegrees = 0;
+        applyRotation(activeImageContainer, 0);
+    }, 1);
 }
 
 function onPlayPause(event?: Event & { data?: boolean }): void {
