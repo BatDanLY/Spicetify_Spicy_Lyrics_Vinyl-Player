@@ -467,6 +467,7 @@ function bindElements(): void {
         attachListeners(mediaBox as HTMLElement, imageContainer as HTMLElement);
     }
 
+    applyRotation(activeImageContainer, currentDegrees, true);
     startAnimationLoop();
 }
 
