@@ -1,4 +1,4 @@
-<img width="2560" height="1393" alt="image" src="https://github.com/user-attachments/assets/13cb47a2-ced3-4021-84c1-7addad6c5bae" /># 🎵 Spicetify Spicy Lyrics Vinyl-Player
+# 🎵 Spicetify Spicy Lyrics Vinyl-Player
 
 A [Spicetify](https://spicetify.app) extension that turns your album art into a spinning vinyl record — inspired by the rotating disc in Instagram stories. The disc rotates as your song plays, and you can grab and spin it to scrub through the track.
 
