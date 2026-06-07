@@ -502,7 +502,7 @@ function onPlayPause(event?: Event & { data?: boolean }): void {
     }
 }
 
-async function main(): Promise<void> {
+export async function main(): Promise<void> {
     while (!Spicetify?.showNotification || !Spicetify?.Player?.addEventListener) {
         await new Promise<void>((resolve) => setTimeout(resolve, 100));
     }
@@ -512,6 +512,7 @@ async function main(): Promise<void> {
     bindElements();
 
     Spicetify.Player.addEventListener("songchange", onSongChange);
+    // @ts-ignore
     Spicetify.Player.addEventListener("onplaypause", onPlayPause as EventListener);
 
     startAnimationLoop();
@@ -520,5 +521,3 @@ async function main(): Promise<void> {
         "Vinyl-Player Addon Loaded"
     );
 }
-
-export default main;
