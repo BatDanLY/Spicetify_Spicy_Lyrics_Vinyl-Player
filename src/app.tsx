@@ -36,6 +36,21 @@ let activeMediaBox: Element | null = null;
 /** MutationObserver watching the player area for DOM swaps. */
 let domObserver: MutationObserver | null = null;
 
+/** List of music note characters for Particles */
+const musicNotes = ["♪", "♫", "♬", "♩"];
+
+/** Counter used to reduce note count */
+let musicNoteCounter = 0;
+
+/** Lower means more note particles */
+const musicNoteAmount = 3;
+
+/** Stores Particles for reuse */
+const particlePool: HTMLDivElement[] = [];
+
+/** Hard limit on particle count */
+const MAX_POOL_SIZE = 30;
+
 
 interface DragState {
     isPointerDown: boolean;
@@ -63,6 +78,77 @@ let drag: DragState = {
     startY: 0,
 };
 
+function getParticle(): HTMLDivElement {
+    let particle = particlePool.pop();
+
+    if (!particle) {
+        particle = document.createElement("div");
+
+        particle.style.position = "fixed";
+        particle.style.pointerEvents = "none";
+        particle.style.color = "white";
+        particle.style.zIndex = "999999";
+        particle.style.willChange = "transform, opacity";
+
+        document.body.appendChild(particle);
+    }
+
+    particle.style.display = "block";
+
+    return particle;
+}
+
+function releaseParticle(particle: HTMLDivElement): void {
+    particle.style.display = "none";
+
+    if (particlePool.length < MAX_POOL_SIZE) {
+        particlePool.push(particle);
+    } else {
+        particle.remove();
+    }
+}
+
+function spawnMusicNote(x: number, y: number): void {
+    const seed = Math.random();
+
+    const note = getParticle();
+
+    note.textContent =
+        musicNotes[(seed * musicNotes.length) | 0];
+
+    note.style.fontSize = `${50 + seed * 12}px`;
+
+    note.style.transform = `translate(${x}px, ${y}px)`;
+
+    const angle = (seed - 0.5) * Math.PI;
+    const distance = 50 + seed * 50;
+
+    const animation = note.animate(
+        [
+            {
+                transform: `translate(${x}px, ${y}px) scale(1)`,
+                opacity: 1,
+            },
+            {
+                transform: `translate(${
+                    x + Math.cos(angle) * distance
+                }px, ${
+                    y - distance
+                }px) scale(1.5)`,
+                opacity: 0,
+            },
+        ],
+        {
+            duration: 1000,
+            easing: "ease-out",
+        }
+    );
+
+    animation.onfinish = () => {
+        releaseParticle(note);
+    };
+}
+
 function angleToCursor(
     clientX: number,
     clientY: number,
@@ -85,7 +171,7 @@ function applyRotation(el: Element | null, degrees: number, instant = false): vo
     if (!el) return;
     (el as HTMLElement).style.transform = `rotate(${degrees}deg)`;
     (el as HTMLElement).style.willChange = "transform";
-    (el as HTMLElement).style.transition = instant ? "none" : "transform 0.4s linear";
+    (el as HTMLElement).style.transition = instant ? "none": "transform 0.4s linear";
 }
 
 function angleToProgress(totalAngleDelta: number): number {
@@ -174,6 +260,13 @@ function onWindowPointerMove(e: PointerEvent): void {
     currentDegrees = startDegrees + visualDelta;
     applyRotation(activeImageContainer, currentDegrees, true);
 
+    if (musicNoteCounter == 0) {
+        spawnMusicNote(e.clientX, e.clientY);
+        musicNoteCounter = musicNoteAmount;
+    } else {
+        musicNoteCounter -= 1;
+    }
+
     updateTimeline(angleToProgress(drag.totalAngleDelta));
 }
 
@@ -195,12 +288,12 @@ function onWindowPointerUp(_e: PointerEvent): void {
 
     Spicetify.Player.seek(finalProgress);
 
-    if (wasPlayingBeforeDrag) {
-        Spicetify.Player.play();
-    }
-
-    startAnimationLoop();
-
+    setTimeout(function(){
+        if (wasPlayingBeforeDrag) {
+            Spicetify.Player.play();
+        }
+        startAnimationLoop();
+    }, 60);
     document.body.classList.remove(DRAGGING_CLASS);
 }
 
@@ -388,7 +481,7 @@ function startDOMObserver(): void {
 
 function onSongChange(): void {
     currentDegrees = 0;
-    applyRotation(activeImageContainer, 0);
+    applyRotation(activeImageContainer, 0, true);
 }
 
 function onPlayPause(event?: Event & { data?: boolean }): void {
