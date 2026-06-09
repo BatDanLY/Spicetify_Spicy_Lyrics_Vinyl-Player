@@ -502,7 +502,7 @@ function onPlayPause(event?: Event & { data?: boolean }): void {
     }
 }
 
-export async function main(): Promise<void> {
+async function main(): Promise<void> {
     while (!Spicetify?.showNotification || !Spicetify?.Player?.addEventListener) {
         await new Promise<void>((resolve) => setTimeout(resolve, 100));
     }
@@ -521,3 +521,5 @@ export async function main(): Promise<void> {
         "Vinyl-Player Addon Loaded"
     );
 }
+
+export default main;
