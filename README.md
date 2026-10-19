@@ -104,4 +104,4 @@ Tested against Spotify desktop with Spicetify and Spicy Lyrics. Because the exte
 
 ## License
 
-MIT
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
